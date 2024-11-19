@@ -34,6 +34,12 @@ public abstract class BaseHTTPClients {
         return given(this.baseRequest())
                 .get(url);
     }
+    public Response doGetRequest(String url, Object requestBody) {
+        return given(this.baseRequest())
+                .body(requestBody)
+                .when()
+                .get(url);
+    }
 
     public Response doDeleteRequest(String url, String contentType) {
         return given(this.baseRequest(contentType))

@@ -47,12 +47,6 @@ public class PetPositiveTests {
         tag.setId(1);
         tag.setName("Friendly");
         pet.setTags(List.of(tag));
-
-        Response response = petAPI.createNewPet(pet);
-        if (response.getStatusCode() == SC_OK) {
-            pet.setId(Long.parseLong(response.getBody().jsonPath().getString("id")));
-            petIds.add(pet.getId());
-        }
     }
 
     @After
@@ -71,6 +65,10 @@ public class PetPositiveTests {
     @Description("Тест API для создания питомца с валидными данными. Ожидаемый результат - питомец создан успешно.")
     public void createNewPetSuccessfully() {
         Response response = petAPI.createNewPet(pet);
+        if (response.getStatusCode() == SC_OK) {
+            pet.setId(Long.parseLong(response.getBody().jsonPath().getString("id")));
+            petIds.add(pet.getId());
+        }
 
         PetResponse petResponse = response.as(PetResponse.class);
 
@@ -87,40 +85,52 @@ public class PetPositiveTests {
     @DisplayName("Изменение данных о питомце")
     @Description("Тест API для изменения данных питомца. Ожидаемый результат - данные изменены успешно.")
     public void updatePetDataSuccessfully() {
+        Response response = petAPI.createNewPet(pet);
+
         pet.setName("UpdatedPirozhok");
         pet.setStatus("sold");
         pet.getCategory().setName("UpdatedDogs");
         pet.setPhotoUrls(List.of("http://dogs-photo.ru/updated_dog.jpg"));
         pet.getTags().get(0).setName("Active");
-        Response response = petAPI.updatePetData(pet);
 
-        PetResponse petResponse = response.as(PetResponse.class);
+        Response putResponse = petAPI.updatePetData(pet);
+        if (putResponse.getStatusCode() == SC_OK) {
+            pet.setId(Long.parseLong(putResponse.getBody().jsonPath().getString("id")));
+            petIds.add(pet.getId());
+        }
 
-        checkResponse.checkStatusCode(response, SC_OK);
-        checkResponse.checkPetName(response, petResponse);
-        checkResponse.checkPetCategory(response, petResponse);
-        checkResponse.checkPetStatus(response, petResponse);
-        checkResponse.checkPetPhotoUrls(response, petResponse);
-        checkResponse.checkPetTags(response, petResponse);
+        PetResponse petResponse = putResponse.as(PetResponse.class);
 
-        System.out.println("Updated Response Body: " + response.getBody().asString());
+        checkResponse.checkStatusCode(putResponse, SC_OK);
+        checkResponse.checkPetName(putResponse, petResponse);
+        checkResponse.checkPetCategory(putResponse, petResponse);
+        checkResponse.checkPetStatus(putResponse, petResponse);
+        checkResponse.checkPetPhotoUrls(putResponse, petResponse);
+        checkResponse.checkPetTags(putResponse, petResponse);
+
+        System.out.println("Updated Response Body: " + putResponse.getBody().asString());
     }
 
     @Test
     @DisplayName("Получение данных о питомце")
     @Description("Тест API для получения данных о созданном питомце. Ожидаемый результат - данные корректно получены.")
     public void getPetDataSuccessfully() {
-        Response response = petAPI.getPetData(pet.getId());
+        Response response = petAPI.createNewPet(pet);
+        if (response.getStatusCode() == SC_OK) {
+            pet.setId(Long.parseLong(response.getBody().jsonPath().getString("id")));
+            petIds.add(pet.getId());
+        }
+        Response getResponse = petAPI.getPetData(pet.getId());
 
-        PetResponse petResponse = response.as(PetResponse.class);
+        PetResponse petResponse = getResponse.as(PetResponse.class);
 
-        checkResponse.checkStatusCode(response, SC_OK);
-        checkResponse.checkPetName(response, petResponse);
-        checkResponse.checkPetCategory(response, petResponse);
-        checkResponse.checkPetStatus(response, petResponse);
-        checkResponse.checkPetPhotoUrls(response, petResponse);
-        checkResponse.checkPetTags(response, petResponse);
+        checkResponse.checkStatusCode(getResponse, SC_OK);
+        checkResponse.checkPetName(getResponse, petResponse);
+        checkResponse.checkPetCategory(getResponse, petResponse);
+        checkResponse.checkPetStatus(getResponse, petResponse);
+        checkResponse.checkPetPhotoUrls(getResponse, petResponse);
+        checkResponse.checkPetTags(getResponse, petResponse);
 
-        System.out.println("Response Body: " + response.getBody().asString());
+        System.out.println("Response Body: " + getResponse.getBody().asString());
     }
 }
