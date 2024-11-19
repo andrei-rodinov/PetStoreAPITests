@@ -18,7 +18,7 @@ import static org.apache.http.HttpStatus.*;
 @Tag("Store-tests")
 @Epic("Тестирование API PetStore")
 @Feature("Негативные сценарии API - Store")
-@DisplayName("Набор тестов № 3: Негативные сценарии для заказов")
+@DisplayName("Набор тестов № 4: Негативные сценарии создания / удаления / получения заказа")
 public class StoreNegativeTests {
     private final StoreAPIOperators storeAPI = new StoreAPIOperators();
     private final ResponseChecks checkResponse = new ResponseChecks();

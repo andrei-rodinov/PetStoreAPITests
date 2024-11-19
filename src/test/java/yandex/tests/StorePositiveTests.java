@@ -23,7 +23,7 @@ import static org.apache.http.HttpStatus.*;
 @Tag("Store-tests")
 @Epic("Тестирование API PetStore")
 @Feature("Тестирование ручек API - Store")
-@DisplayName("Набор тестов № 2: получение ассортимента / создание заказа / удаление заказа")
+@DisplayName("Набор тестов № 3: Позитивные сценарии создания / удаления / получения заказа")
 public class StorePositiveTests {
     private Pet pet;
     private Order order;
